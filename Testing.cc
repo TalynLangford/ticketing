@@ -16,7 +16,7 @@ void Testing::runTests()
 void Testing::ticketingTests()
 {
     ticketingConstructors();
-    cout << TICKET_PREFIX << " tests passed" << endl;
+    cout << ticket_prefix << " tests passed" << endl;
 }
 
 /*
@@ -31,7 +31,7 @@ void Testing::ticketingConstructors()
     TicketingSystem withArgs(ticketNum);
     assert(withArgs.getTicket() == ticketNum - 1);
 
-    cout << TICKET_PREFIX << " constructor test(s) passed" << endl;
+    cout << ticket_prefix << " constructor test(s) passed" << endl;
 }
 
 /*
@@ -40,5 +40,5 @@ void Testing::ticketingConstructors()
 void Testing::ticketingGetTicket(TicketingSystem &t, int target)
 {
     assert(t.getTicket() == target);
-    cout << TICKET_PREFIX << " decrement test passed." << endl;
+    cout << ticket_prefix << " decrement test passed." << endl;
 }
