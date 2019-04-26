@@ -20,25 +20,25 @@ void Testing::ticketingTests()
 }
 
 /*
-    Confirms constructors and getTicket() work as intended.
+    Confirms constructors and functionHandle() work as intended.
 */
 void Testing::ticketingConstructors()
 {
     int ticketNum = 100;
     TicketingSystem noArgs;
-    assert(noArgs.getTicket() == 0);
+    assert(noArgs.functionHandle("") == 0);
 
     TicketingSystem withArgs(ticketNum);
-    assert(withArgs.getTicket() == ticketNum - 1);
+    assert(withArgs.functionHandle("") == ticketNum - 1);
 
     cout << ticket_prefix << " constructor test(s) passed" << endl;
 }
 
 /*
-    Confirms getTicket() works as intended.
+    Confirms functionHandle() works as intended.
 */
 void Testing::ticketingGetTicket(TicketingSystem &t, int target)
 {
-    assert(t.getTicket() == target);
+    assert(t.functionHandle("") == target);
     cout << ticket_prefix << " decrement test passed." << endl;
 }

@@ -7,6 +7,11 @@ TicketingSystem::~TicketingSystem()
     std::cout << "Destructing TicketingSystem" << std::endl;
 }
 
+int TicketingSystem::functionHandle(std::string func)
+{
+	return TicketingSystem::getTicket();
+}
+
 int TicketingSystem::getTicket()
 {
     if (tickets > 0)
