@@ -9,7 +9,7 @@ public:
     TicketingSystem(int t);
     ~TicketingSystem();
 
-    int functionHandle(std::string func);
+    std::string functionHandle(std::string func);
 
 private:
     int tickets;
