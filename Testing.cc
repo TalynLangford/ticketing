@@ -24,12 +24,15 @@ void Testing::ticketingTests()
 */
 void Testing::ticketingConstructors()
 {
+    std::string resp = "";
     int ticketNum = 100;
     TicketingSystem noArgs;
-    assert(noArgs.functionHandle("") == 0);
+    resp = noArgs.functionHandle("");
+    assert(resp.compare(to_string((0))) == 0);
 
     TicketingSystem withArgs(ticketNum);
-    assert(withArgs.functionHandle("") == ticketNum - 1);
+    resp = withArgs.functionHandle("");
+    assert(resp.compare(to_string(ticketNum - 1)) == 0);
 
     cout << ticket_prefix << " constructor test(s) passed" << endl;
 }
@@ -39,6 +42,6 @@ void Testing::ticketingConstructors()
 */
 void Testing::ticketingGetTicket(TicketingSystem &t, int target)
 {
-    assert(t.functionHandle("") == target);
+    assert(t.functionHandle("").compare(to_string(target)));
     cout << ticket_prefix << " decrement test passed." << endl;
 }
