@@ -4,11 +4,11 @@ Server::Server() : m_port(5432), m_backlog(10), m_maxLines(1024) {}
 Server::Server(int m_port, int m_backlog, int m_maxLines) : m_port(m_port), m_backlog(m_backlog), m_maxLines(m_maxLines) {}
 Server::~Server() {}
 
-bool Server::startServer()
+bool Server::startServer(IService &service)
 {
     ServerDeps deps = configureServer();
     bindServer(deps);
-    listenServer(deps);
+    listenServer(deps, service);
 }
 
 Server::ServerDeps Server::configureServer()
@@ -49,7 +49,7 @@ void Server::bindServer(Server::ServerDeps deps)
     }
 }
 
-void Server::listenServer(Server::ServerDeps deps)
+void Server::listenServer(Server::ServerDeps deps, IService &service)
 {
     int new_s, valread;
     int addrlen = sizeof(deps.address);
@@ -82,8 +82,13 @@ void Server::listenServer(Server::ServerDeps deps)
         {
             perror("valread");
         }
+
+        // should this be in helper method?
+        std::string temp = service.functionHandle(""); // empty string (for now!)
+        const char* resp = temp.c_str();
+
         printf("%s\n",buf);
-        send(new_s, msg, strlen(msg), 0);
+        send(new_s, resp, strlen(resp), 0);
         printf("Hello message sent\n");
 
         if (!strncmp(buf, m_exitMsg, (size_t)(sizeof(m_exitMsg) - 1)))

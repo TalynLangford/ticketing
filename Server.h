@@ -1,3 +1,5 @@
+#include "IService.h"
+
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/socket.h>
@@ -13,7 +15,7 @@ public:
     Server(int port, int backlog, int maxlines);
     ~Server();
 
-    bool startServer();
+    bool startServer(IService &service);
 
 private:
     struct ServerDeps {
@@ -28,5 +30,5 @@ private:
 
     ServerDeps configureServer();
     void bindServer(ServerDeps deps);
-    void listenServer(ServerDeps deps);
+    void listenServer(ServerDeps deps, IService &s);
 };
