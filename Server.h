@@ -1,5 +1,5 @@
+#pragma once
 #include "IService.h"
-
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/socket.h>
