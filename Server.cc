@@ -24,6 +24,11 @@ Server::ServerDeps Server::configureServer()
         exit(1);
     }
 
+    /*
+        Fails on mac, works on Ubuntu
+        
+        Either come up with a workaround or set options based on os
+    */
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
     {
         perror("setsockopt");
@@ -49,12 +54,38 @@ void Server::bindServer(Server::ServerDeps deps)
     }
 }
 
+void Server::handleConnection(int fd, int addrlen, int m_maxLines, IService &service)
+{
+    int valread;
+    char buf[1024] = {0};
+    char const *msg = "Hello from the server";
+    std::cout << "accepted..." << fd << std::endl;
+
+    // truncates long messages. Use recv in while to capture.
+    valread = read(fd, buf, m_maxLines);
+
+    std::cout << "read : " << valread << std::endl;
+    if (valread < 0)
+    {
+        perror("valread");
+    }
+
+    // should this be in helper method?
+    std::string temp = service.functionHandle(""); // empty string (for now!)
+    const char* resp = temp.c_str();
+
+    printf("%s\n",buf);
+    send(fd, resp, strlen(resp), 0);
+    printf("Hello message sent\n");
+
+    bzero(buf, m_maxLines);
+}
+
 void Server::listenServer(Server::ServerDeps deps, IService &service)
 {
-    int new_s, valread;
+    int new_s;
     int addrlen = sizeof(deps.address);
-    char buf[m_maxLines] = {0};
-    char const *msg = "Hello from the server";
+    
 
     if (listen(deps.fd, m_backlog) < 0)
     {
@@ -64,36 +95,14 @@ void Server::listenServer(Server::ServerDeps deps, IService &service)
 
     std::cout << "listening..." << std::endl;
 
-    if ((new_s = accept(deps.fd, (struct sockaddr*)&deps.address, (socklen_t*)&addrlen)) < 0)
+    while(true)
     {
-        perror("accept");
-        exit(1);
-    }
-
-    std::cout << "accepted..." << new_s << std::endl;
-
-    while(1)
-    {
-        // truncates long messages. Use recv in while to capture.
-        valread = read(new_s, buf, m_maxLines);
-
-        std::cout << "read : " << valread << std::endl;
-        if (valread < 0)
+        if ((new_s = accept(deps.fd, (struct sockaddr*)&deps.address, (socklen_t*)&addrlen)) < 0)
         {
-            perror("valread");
+            perror("accept");
+            exit(1);
         }
 
-        // should this be in helper method?
-        std::string temp = service.functionHandle(""); // empty string (for now!)
-        const char* resp = temp.c_str();
-
-        printf("%s\n",buf);
-        send(new_s, resp, strlen(resp), 0);
-        printf("Hello message sent\n");
-
-        if (!strncmp(buf, m_exitMsg, (size_t)(sizeof(m_exitMsg) - 1)))
-           break;
-
-        bzero(buf, m_maxLines);
+        async(handleConnection, new_s, addrlen, m_maxLines, std::ref(service));
     }
 }

@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <iostream>
+#include <future>
 
 class Server {
 
@@ -31,4 +32,5 @@ private:
     ServerDeps configureServer();
     void bindServer(ServerDeps deps);
     void listenServer(ServerDeps deps, IService &s);
+    static void handleConnection(int fd, int addrlen, int max_lines, IService &service);
 };
